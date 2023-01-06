@@ -296,7 +296,7 @@ Once you input that, the script will wait for a keypress to start the wait and t
 At the end of the trial and after transferring the video file to the storage drive, the script will ask if you want to delete the file.
 Answering "Yes" will delete the file and any other answer will skip this step.
 
-While waiting, you can disconnect from the Pi and unplug the Ethernet cable. To do this, you need to press Ctrl+A followed by Ctrl+D to store your `screen` instance. To return to the same instance when you return, use the following command"
+While waiting, you can disconnect from the Pi and unplug the Ethernet cable. **To do this, you need to press Ctrl+A followed by Ctrl+D to store your `screen` instance.** To return to the same instance when you return, use the following command"
 
 ```bash
 screen -r
