@@ -229,7 +229,7 @@ And it should just connect you.
 ## Use
 
 To use all the Pis you will have to connect via SSH.
-I recommend using a Linux distribution or installing a Linux distribution on your Windows laptop, as seen [here](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview). This guide (up to step 4) will allow you to use a Ubuntu terminal as if you had the whole Ubuntu OS.
+I recommend using a Linux distribution or installing a Linux distribution on your Windows laptop, as seen [here](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview). This guide (up to step 4) will allow you to use an Ubuntu terminal as if you had the whole Ubuntu OS.
 
 ### Connecting to the Pis
 
@@ -267,3 +267,37 @@ alias sshpa3='ssh panama3@192.168.178.152'
 ```
 
 And with passwordless ssh once I type `sshpa1` and hit Enter, I'm automatically logged into the storage Pi (panama1).
+
+### Running the trials
+
+Once logged into a camera Pi you should change directories (`cd`) to the Code folder:
+
+```bash
+cd Code
+```
+
+In here you will find 2 Python scripts.
+One of them just contains a function to transfer files (`transfer.py`) and the other will run the trial (`trial.py`).
+**Before starting, you should run the `screen` program.**
+
+```bash
+screen
+```
+
+This will allow you to exit the Pi connection while allowing the script to continue running.
+To run the trial script you use the following command:
+
+```bash
+python3 trial.py
+```
+
+The first step in the script is to input the code for the name of the trial. This should be in the form of FXMYMZ, where X is the female number and Y and Z and the male numbers.
+Once you input that, the script will wait for a keypress to start the wait and trial timers.
+At the end of the trial and after transferring the video file to the storage drive, the script will ask if you want to delete the file.
+Answering "Yes" will delete the file and any other answer will skip this step.
+
+While waiting, you can disconnect from the Pi and unplug the Ethernet cable. To do this, you need to press Ctrl+A followed by Ctrl+D to store your `screen` instance. To return to the same instance when you return, use the following command"
+
+```bash
+screen -r
+```
