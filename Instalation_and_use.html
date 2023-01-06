@@ -1,0 +1,95 @@
+<h2 id="installation">Installation</h2>
+<h3 id="os-installation">OS installation</h3>
+<p>For these experiments we will be using the legacy version of Raspberry Pi. The legacy version has support for the picamera python module which will make things easier with my knowledge.</p>
+<p>Using the Raspberry Pi Imager, we can select an alternative version of the Raspberry Pi OS. Here we want to select the “Raspberry Pi OS (legacy)” (or the Lite version). Before starting the installation, we need to change some options:</p>
+<ol type="1">
+<li>Enable SSH, so we can connect to the Pis without an extra monitor and keyboard;</li>
+<li>Set username and password. Here I assigned each of the Pis a number and standardized both according to number. Usernames are panamaX, and passwords are panamaXpi, where X is the assigned number;</li>
+<li>Configure wireless LAN. This might be necessary to update and install things on the Pis if there is no available Ethernet internet connection. Just write down the name and password for the connection. Make sure to also select the correct country for Wi-Fi. “eduroam” might not work.</li>
+<li>Set the time zone.</li>
+</ol>
+<p>After all the options are set, select the storage location where the OS will be installed making sure it is the SD card and not some other drive.</p>
+<h3 id="setup">Setup</h3>
+<p>Once the installation is done, we can plug the Pi to power and wait for it to boot. If the Pi connected to a network (wireless or wired) it is possible to find its local IP address. This can be done by accessing the router and seeing which new IP address appeared, or you can use a Linux program with the following command:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="fu">sudo</span> arp-scan -l</span></code></pre></div>
+<p>This will show all devices connected to the same network as the device running the command. With the local IP address, we can connect to the Pis using an SSH connection. In Linux this is already included in most installations, so you can just run:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="fu">ssh</span> panamaX@xxx.xxx.xxx.xxx</span></code></pre></div>
+<p>Where X is the number assigned to the specific Pi, and the xxx.xxx.xxx.xxx is whatever IP address it has. This will ask for the password (and a confirmation if you actually trust the Pi when you first connect) and it will log you into the Pi.</p>
+<h4 id="specific-for-the-storage-pi">Specific for the storage Pi</h4>
+<p>The storage Pi, named panama1, will be assigning IP addresses in our offline local network, so we need to install an extra package:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">sudo</span> apt install dnsmasq</span></code></pre></div>
+<p>Once installed, we can configure the DHCP server to assign specific IPs. We do this by modifying a specific file:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">sudo</span> nano /etc/dnsmasq.conf</span></code></pre></div>
+<p>And adding the following at the end of the file:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="va">interface=</span>eth0</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="ex">bind-dynamic</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="ex">domain-needed</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="ex">bogus-priv</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a><span class="ex">dhcp-range</span>=192.168.178.150,192.168.178.199,255.255.255.0,12h</span></code></pre></div>
+<p>As specified, the Pi will only work as a router (assigning IPs) when connected with Ethernet (the eth0 part), and it will assign IPs between 192.168.178.150 and 192.168.178.199.</p>
+<p>Once added, we restart the server, so the changes can be applied:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="fu">sudo</span> service dnsmasq restart</span></code></pre></div>
+<p>I followed <a href="https://raspberrytips.com/dhcp-server-on-raspberry-pi/">this page</a> to install this.</p>
+<h4 id="all-pis">All Pis</h4>
+<h5 id="static-ip-address">Static IP address</h5>
+<p>First we will assign static IP addresses to each Pi when using Ethernet. This will make it so that connecting to any of them will be much simpler, and we won’t have to always look up their IP addresses. The information can be found <a href="https://raspberrytips.com/set-static-ip-address-raspberry-pi/">here</a>. It just involves modifying one file in each Pi:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="fu">sudo</span> nano /etc/dhcpcd.conf</span></code></pre></div>
+<p>By adding the following at the end of the file or uncommenting and modifying the already existing section:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">interface</span> eth0</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="ex">static</span> ip_address=192.168.178.15X/24</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="ex">static</span> routers=192.168.178.150</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="ex">static</span> domain_name_servers=192.168.178.150</span></code></pre></div>
+<p>The X is the number of the Pi minus 1 (so panama1 is 150, panama2 is 151, and panama3 is 152). The router and domain name parts should point to the storage Pi. This Ethernet IP should be setup after a reboot.</p>
+<h5 id="updating-and-installing-packages">Updating and installing packages</h5>
+<p>To update the Pis we need to run two commands. First, we update the package manager:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="fu">sudo</span> apt update</span></code></pre></div>
+<p>Next we upgrade whatever packages we already have installed:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">sudo</span> apt upgrade</span></code></pre></div>
+<p>This will ask for a confirmation. You can write “y” and press Enter.</p>
+<p>Once updates are finished we can install the last necessary bit. The first one is <code>screen</code>. This package allows you to store you terminal instance and disconnect from the Pis without interrupting whatever you were doing. We install this with"</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="fu">sudo</span> apt install screen</span></code></pre></div>
+<p>Confirm all prompts and it will be installed.</p>
+<p>Next we need to install a Python package to transfer files securely between the Pis. From <a href="https://www.paramiko.org/installing.html">here</a> we see the package needs the Rust compiler. So we will install the Rust compiler first with:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="ex">curl</span> https://sh.rustup.rs -sSf <span class="kw">|</span> <span class="fu">sh</span></span></code></pre></div>
+<p>This will ask if you want the default installation. You can type “1” to continue with defaults. You also might need to restart the terminal to have the Rust compiler available. If you are connected via SSH, you will have t disconnect and connect again. Now that Rust is installed, we can install <code>paramiko</code> by using:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="ex">pip</span> install paramiko</span></code></pre></div>
+<p>It should just install without any problems.</p>
+<h5 id="disabling-wi-fi">Disabling Wi-Fi</h5>
+<p>We can disable the Wi-Fi access in the Pis since, if everything goes right, we won’t need it any more, and it is very likely it won’t connect to eduroam. To do this we run this command on all Pis:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="ex">rfkill</span> block wifi</span></code></pre></div>
+<p>To undo this step, we run:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ex">rfkill</span> unblock wifi</span></code></pre></div>
+<p>To connect again to a wireless network, we can use the <code>raspi-config</code> options to again type the name and password of a Wi-Fi network.</p>
+<h4 id="specific-for-camera-pis">Specific for camera Pis</h4>
+<h5 id="enabling-the-camera">Enabling the camera</h5>
+<p>The camera Pis also need to have their camera modules enabled. To do this we go into the <code>raspi-config</code> options:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="fu">sudo</span> raspi-config</span></code></pre></div>
+<p>Go into “Interface options” &gt; “Camera” and enable it. It will prompt you to reboot the Pi. Once booted the camera should be operational.</p>
+<h5 id="ssh-without-password">SSH without password</h5>
+<p>With this step we won’t need to use passwords each time we want to log into a Pi. The full instructions are found <a href="https://www.ibm.com/support/pages/configuring-ssh-login-without-password">here</a>. We start by generating SSH keys in our laptops:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="fu">ssh-keygen</span> -t rsa</span></code></pre></div>
+<p>There’s no need to choose a passphrase or anything else. Just use all the default options and leave the passphrase empty. Next, go into the ssh directory and confirm the keys were created:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="bu">cd</span> ~/.ssh/</span></code></pre></div>
+<p>And</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">ls</span></span></code></pre></div>
+<p>You should see at least <code>id_rsa</code> and <code>id_rsa.pub</code>. The pub file will be stored in the target Pis so that it “knows” your laptop and allows you in without password. Next we copy this file to the target Pi:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="ex">ssh-copy-id</span> -i id_rsa.pub panamaX@192.168.178.xxx</span></code></pre></div>
+<p>Once again, the Xs correspond to whatever Pi you are targetting. This should be repeated for each Pi. Once this is done, you can connect with:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="fu">ssh</span> panamaX@192.168.178.xxx</span></code></pre></div>
+<p>And it should just connect you.</p>
+<h2 id="use">Use</h2>
+<p>To use all the Pis you will have to connect via SSH. I recommend using a Linux distribution or installing a Linux distribution on your Windows laptop, as seen <a href="https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-11-with-gui-support#1-overview">here</a>. This guide (up to step 4) will allow you to use a Ubuntu terminal as if you had the whole Ubuntu OS.</p>
+<h3 id="connecting-to-the-pis">Connecting to the Pis</h3>
+<p>At any point, you can connect to any Pi if you know it’s username, IP address and password:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a><span class="fu">ssh</span> panamaX@192.168.178.xxx</span></code></pre></div>
+<p>However, we can make things simpler in two ways. First, we can remove the need for a password (as done in the last step of the Installation section). And second, we can remove the need to type all that by creating aliases.</p>
+<h4 id="ssh-without-password-again">SSH without password (again)</h4>
+<p>See the previous section with the same name. Using the Ubuntu Windows subsystem should be the same process. I haven’t tried other programs.</p>
+<h4 id="aliases">Aliases</h4>
+<p>To create aliases (that is you can create a simpler word that will do the same command) we need to modify the <code>.bashrc</code> file.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="fu">nano</span> ~/.bashrc</span></code></pre></div>
+<p>In this file, at the end, you can add whichever aliases you want. For example, my aliases for the Pis are:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a><span class="bu">alias</span> sshpa1=<span class="st">&#39;ssh panama1@192.168.178.150&#39;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a><span class="bu">alias</span> sshpa2=<span class="st">&#39;ssh panama2@192.168.178.151&#39;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true"></a><span class="bu">alias</span> sshpa3=<span class="st">&#39;ssh panama3@192.168.178.152&#39;</span></span></code></pre></div>
+<p>And with passwordless ssh once I type <code>sshpa1</code> and hit Enter, I’m automatically logged into the storage Pi (panama1).</p>
