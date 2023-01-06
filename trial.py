@@ -16,12 +16,12 @@ additional_folder = ""
 target_folder = server_folder + additional_folder
 cam_resolution = (1280, 720)  # camera resolution (needs to be a tuple)
 cam_framerate = 30  # camera framerate
-trial_duration = 0.2 # minutes
+trial_duration = 30 # minutes
 camera_seconds = trial_duration * 60 # convert trial_duration to seconds
-acclimatization_duration = 30 # minutes
+acclimatization_duration = 15 # minutes
 acclimatization_seconds = acclimatization_duration * 60 # convert to seconds
 wait_inverval = 5 #minutes
-wait_seconds = wait_inverval #convert to seconds
+wait_seconds = wait_inverval * 60 #convert to seconds
 
 def main() -> None:
     # --------- Initialize Camera ------------------------
