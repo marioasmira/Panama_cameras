@@ -285,6 +285,23 @@ screen
 ```
 
 This will allow you to exit the Pi connection while allowing the script to continue running.
+
+We should confirm if the camera is in the correct place. To do this we will take a simple photo with the same resolution as the videos:
+
+```bash
+raspistill -o PICTURE.jpg -w 1280 -h 720
+```
+
+This will take a photo with the camera with a 1280 by 720 resolution and save it as the "PICTURE.jpg" file. Next, we copy the file into our laptop to have a look (this step should be done in a second terminal. Just open another window of your terminal of choice):
+
+```bash
+scp panamaX:192.168.178.XXX:~/Code/PICTURE.jpg .
+```
+
+```scp``` is a command to securely copy files between computers. ```panamaX:192.168.178.XXX``` is the location you want to connect to and ```:~/Code/PICTURE.jpg``` is what you want to copy over. The final ```.``` is important. It specifies the location where you want to store the file. A single dot means "here", so where ever you have you terminal running. Make sure you ```cd``` to the folder you want to or change the ```.``` to the relevant path.
+
+Once you have the .jpg file in your laptop you can just open it to see if every thing is correct.
+
 To run the trial script you use the following command:
 
 ```bash
