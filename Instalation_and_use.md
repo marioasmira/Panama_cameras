@@ -298,11 +298,11 @@ Next, we copy the file into our laptop to have a look (this step should be done 
 Just open another window of your terminal of choice):
 
 ```bash
-scp panamaX:192.168.178.XXX:~/Code/PICTURE.jpg .
+scp panamaX@192.168.178.XXX:~/Code/PICTURE.jpg .
 ```
 
 ```scp``` is a command to securely copy files between computers.
-```panamaX:192.168.178.XXX``` is the site/computer you want to connect to and ```:~/Code/PICTURE.jpg``` is what you want to copy over.
+```panamaX@192.168.178.XXX``` is the site/computer you want to connect to and ```:~/Code/PICTURE.jpg``` is what you want to copy over.
 The final ```.``` is important.
 It specifies the location where you want to store the file.
 A single dot means "here", so where ever you have you terminal running.
