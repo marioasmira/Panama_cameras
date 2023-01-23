@@ -276,8 +276,8 @@ Once logged into a camera Pi you should change directories (`cd`) to the Code fo
 cd Code
 ```
 
-In here you will find 2 Python scripts.
-One of them just contains a function to transfer files (`transfer.py`) and the other will run the trial (`trial.py`).
+In here you will find three Python scripts.
+One of them just contains a function to transfer files (`transfer.py`), one of them has a script to make a small video (~7 seconds) to test position of stuff, and the other will run the trial (`trial.py`).
 **Before starting, you should run the `screen` program.**
 
 ```bash
