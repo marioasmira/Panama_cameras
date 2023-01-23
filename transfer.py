@@ -3,10 +3,10 @@
 # Date: 04/01/2023
 import paramiko
 
-def transfer_file(file = str, target = str, host = "192.168.178.150", user = "panama1") -> None:
+def transfer_file(file: str, target: str, host = "192.168.178.150", user = "panama1") -> None:
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(host, port = "22", username = user)
+    ssh.connect(host, port = 22, username = user)
 
     ftp_client=ssh.open_sftp()
     try:
