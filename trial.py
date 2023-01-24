@@ -14,7 +14,7 @@ import transfer
 server_folder = "/home/panama1/external/Frog_videos/"
 additional_folder = ""
 target_folder = server_folder + additional_folder
-cam_resolution = (1920, 1080)  # camera resolution (needs to be a tuple)
+cam_resolution = (1280, 720)  # camera resolution (needs to be a tuple)
 cam_framerate = 30  # camera framerate
 trial_duration = 30 # minutes
 camera_seconds = trial_duration * 60 # convert trial_duration to seconds

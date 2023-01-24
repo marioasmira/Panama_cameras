@@ -1,7 +1,7 @@
 import picamera  # for camera
 import time  # for sleep
 
-cam_resolution = (1920, 1080)  # camera resolution (needs to be a tuple)
+cam_resolution = (1280, 720)  # camera resolution (needs to be a tuple)
 cam_framerate = 30  # camera framerate
 
 camera = picamera.PiCamera(
