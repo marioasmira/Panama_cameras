@@ -7,7 +7,7 @@ module which will make things easier with my knowledge.</p>
 of the Raspberry Pi OS. Here we want to select the “Raspberry Pi OS
 (legacy)” (or the Lite version). Before starting the installation, we
 need to change some options:</p>
-<ol class="incremental" type="1">
+<ol type="1">
 <li>Enable SSH, so we can connect to the Pis without an extra monitor
 and keyboard;</li>
 <li>Set username and password. Here I assigned each of the Pis a number
@@ -285,7 +285,11 @@ simple command in your terminal (that is, when not logged into one of
 the Pis). This command assumes that the videos have moved inside the
 relevant date folder:</p>
 <div class="sourceCode" id="cb33"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-rhvu</span> <span class="at">--progress</span><span class="op">=</span>info2 panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/ /mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-rhvu</span> <span class="at">--progress</span><span class="op">=</span>info2</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="ex">panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="ex">/mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/</span></span></code></pre></div>
+<p><em>There is on newline in the command. I had to press enter for
+these to appear okay in the PDF</em></p>
 <p><code>rsync</code> is a program similar to <code>scp</code>, but it
 will not try to copy files that already exist in the target directory.
 The options (the letters after the “-”) are: <code>r</code> is to copy
@@ -325,7 +329,11 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href=
 flash drive, and we can rsync into them (see the laptop option to
 understand all the options I used):</p>
 <div class="sourceCode" id="cb37"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-urhv</span> <span class="at">--info</span><span class="op">=</span>progress2 external/Frog_videos/YYYYMMDD/ flashdrive/Frog_videos/YYYYMMDD/</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rsync</span> <span class="at">-urhv</span> <span class="at">--info</span><span class="op">=</span>progress2</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="ex">external/Frog_videos/YYYYMMDD/</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="ex">flashdrive/Frog_videos/YYYYMMDD/</span></span></code></pre></div>
+<p><em>There is on newline in the command. I had to press enter for
+these to appear okay in the PDF</em></p>
 <p><strong>Important:</strong> When you want to remove the flash drive,
 you will have to unmount it. Similar to mounting, you can use:</p>
 <div class="sourceCode" id="cb38"><pre

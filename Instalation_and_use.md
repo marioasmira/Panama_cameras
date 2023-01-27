@@ -367,8 +367,12 @@ If you are duplicating the videos into your laptop, you can run a simple command
 This command assumes that the videos have moved inside the relevant date folder:
 
 ```bash
-rsync -rhvu --progress=info2 panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/ /mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/
+rsync -rhvu --progress=info2
+panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/
+/mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/
 ```
+
+*There is on newline in the command. I had to press enter for these to appear okay in the PDF*
 
 ```rsync``` is a program similar to ```scp```, but it will not try to copy files that already exist in the target directory.
 The options (the letters after the "-") are: ```r``` is to copy the whole directory (recursive); ```h``` is to show human-readable units; ```v``` is to show more information (verbose); and ```u``` is to only copy new files (update).
@@ -411,8 +415,12 @@ All the data in the flash drive is now found on the ```~/flashdrive/``` director
 Similarly to the laptop option, now we make directories inside the flash drive, and we can rsync into them (see the laptop option to understand all the options I used):
 
 ```bash
-rsync -urhv --info=progress2 external/Frog_videos/YYYYMMDD/ flashdrive/Frog_videos/YYYYMMDD/
+rsync -urhv --info=progress2
+external/Frog_videos/YYYYMMDD/
+flashdrive/Frog_videos/YYYYMMDD/
 ```
+
+*There is on newline in the command. I had to press enter for these to appear okay in the PDF*
 
 **Important:**
 When you want to remove the flash drive, you will have to unmount it.
