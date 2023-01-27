@@ -326,3 +326,100 @@ While waiting, you can disconnect from the Pi and unplug the Ethernet cable. **T
 ```bash
 screen -r
 ```
+
+### Backing up the videos
+
+#### Location
+
+By default, the python script for the trials will transfer each video to the server Pi just before finishing.
+The video will end up in the ```~/external/Frog_videos/``` directory.
+The ```~/external/``` folder is not part of the Pi.
+It is the mount point for the external hard drive.
+To mount the drive in this location I used the following command:
+
+```bash
+sudo mount /dev/sda1 external/
+```
+
+The ```/dev/sda1``` is the designation for the main partition on the external hard drive.
+
+#### Moving videos
+
+Within the ```Frog_videos/``` directory, I have been manually creating a new folder with the current date in the format YYYYMMDD (for example, today is 20230125):
+
+```bash
+mkdir 20230125/
+```
+
+For each trial (so, two videos) I manually move the files in ```Frog_videos/``` into ```Frog_videos/YYYYMMDD```.
+I am not doing this manually because it has been working as a conscious check.
+Each day you make sure to confirm the current date and also that 16 videos end up in the correct folder.
+
+#### Duplicating videos
+
+To make sure we have the videos safe, We are going to upload all of them to the shared Google Drive.
+This can be done while the following trial is running (if the internet speeds allow) or overnight.
+To do this, we need to duplicate the videos into a laptop or a separate drive.
+
+##### In the laptop
+
+If you are duplicating the videos into your laptop, you can run a simple command in your terminal (that is, when not logged into one of the Pis).
+This command assumes that the videos have moved inside the relevant date folder:
+
+```bash
+rsync -rhvu --progress=info2 panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/ /mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/
+```
+
+```rsync``` is a program similar to ```scp```, but it will not try to copy files that already exist in the target directory.
+The options (the letters after the "-") are: ```r``` is to copy the whole directory (recursive); ```h``` is to show human-readable units; ```v``` is to show more information (verbose); and ```u``` is to only copy new files (update).
+The ```--progress=info2``` displays even more information.
+
+The other two arguments should be familiar from the ```scp``` command.
+The first one, ```panama1@192.168.178.150:~/external/Frog_videos/YYYYMMDD/``` is the directory we want to copy.
+The second one, ```/mnt/c/Users/Mario\ Santos\ Mira/Desktop/Frogs/YYYYMMDD/``` is the directory you want to copy into.
+**Notice the ```/``` at the end of both.
+This is necessary because it makes sure both are directories and not files!**
+
+##### In another drive
+
+Here, I am using Joana's 60Gb USB flash drive.
+Other USB drives may have different designations.
+
+In the Raspberry Pi, these drives aren't automatically mounted (that is, we can not access them when plugging them in), so first we find the name of the flash drive partition:
+
+```bash
+sudo fdisk -l
+```
+
+**Be careful with ```fdisk```, it can format drives so make sure you are running this exact command**
+In my case the flash drive partition had the designation ```/dev/sdb1```.
+
+Next, we can make a directory on the Pi where we will mount the flash drive to:
+
+```bash
+mkdir flashdrive/
+```
+
+And mount the flash drive in ```~/flashdrive/```:
+
+```bash
+sudo mount /dev/sdb1 flashdrive/
+```
+
+All the data in the flash drive is now found on the ```~/flashdrive/``` directory.
+
+Similarly to the laptop option, now we make directories inside the flash drive, and we can rsync into them (see the laptop option to understand all the options I used):
+
+```bash
+rsync -urhv --info=progress2 external/Frog_videos/YYYYMMDD/ flashdrive/Frog_videos/YYYYMMDD/
+```
+
+**Important:**
+When you want to remove the flash drive, you will have to unmount it.
+Similar to mounting, you can use:
+
+```bash
+sudo umount /dev/sdb1
+```
+
+Only then can you unplug the USB stick.
