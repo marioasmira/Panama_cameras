@@ -41,7 +41,7 @@ def main() -> None:
     try:
         # -------------------Trial ----------------------
         # stops here and waits for the user to press Enter
-        input("Press a key to start the trial...")
+        #input("Press a key to start the trial...")
         print("Waiting", acclimatization_duration, "minutes for acclimatization.")
         for i in range(0, acclimatization_duration + 1, wait_inverval):
             print("Currently at minute", i, "of acclimatization.")
